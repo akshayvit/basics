@@ -1,0 +1,92 @@
+#include <iostream>
+#define n 4
+#define int_max 10000
+using namespace std;
+struct point{
+    int x,y;
+};
+void prim(int mat[n][n]);
+void preorder(int mat[n][n]);
+void dfsuntil(int mat[n][n],bool visited[n],int u);
+void union(int parent[n],int x,int y);
+int find(int parent[n],int x);
+bool iscycle(int parent[n],int x,int y);
+point min(int mat[n][n],int i);
+int main()
+{
+    //cout << "Hello World!" << endl;
+    int mat[n][n]={{5,0,3,0},
+    {2,4,0,0},
+    {6,0,0,2},
+    {1,0,3,5}};
+    prim(mat);
+    return 0;
+}
+void prim(int mat[n][n]){
+    int temp[n][n];
+    int temp1[n][n];
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(mat[i][j]==0){
+                temp[i][j]=int_max;
+            }
+            else{
+                temp[i][j]=mat[i][j];
+            }
+        }
+    }
+    int parent[n];
+    for(int i=0;i<n;i++){
+        parent[i]=-1;
+    }
+    for(int i=0;i<n;i++){
+        int x=min(temp,i).x;
+        int y=min(temp,i).y;
+        if(find(parent,x)!=find(parent,y)){
+            temp1[x][y]=1;
+        }
+        union(parent,x,y);
+    }
+    preorder(temp);
+}
+point min(int mat[n][n],int i){
+    int min=int_max,mx=-1,my=-1;
+    for(int k=0;k<i;k++){
+        for(int j=0;j<n;j++){
+            if(mat[i][j]<min){
+                mx=i;
+                my=j;
+            }
+        }
+    }
+    return {mx,my};
+}
+int find(int parent[],int x){
+    if(parent[x]==-1){
+        return x;
+    }
+    return find(parent,parent[i]);
+}
+void union(int parent[],int x,int y){
+    int i=find(parent,x);
+    int j=find(parent,y);
+    parent[i]=j;
+}
+void preorder(int mat[n][n]){
+    bool visited[n];
+    for(int i=0;i<n;i++){
+        visited[i]=false;
+    }
+    for(int i=0;i<n;i++){
+        dfsuntil(mat,visited,i);
+    }
+}
+void dfsuntil(int mat[n][n],bool visited[],int u){
+    visited[u]=true;
+    std::cout<<u<<"\n";
+    for(int i=0;i<n;i++){
+        if(mat[u][i]==1 && !visited[i]){
+            dfsuntil(mat,visited,i);
+        }
+    }
+}

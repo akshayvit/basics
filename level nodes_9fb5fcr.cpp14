@@ -1,0 +1,132 @@
+#include <bits/stdc++.h>
+#include <math.h>
+#define max 10000
+using namespace std;
+struct Node {
+int data;
+struct Node* left, *right, *nextRight;
+};
+Node* q[max];
+int front=0;
+int rear=0,size=0;
+void push(Node* n){
+if(rear<max-1){
+q[rear++]=n;
+size++;
+    }
+}
+void pop(){
+if(size!=0){
+front+=1;
+size--;
+    }
+}
+Node* font(){
+if(size!=0){
+return q[front];
+    }
+}
+bool empty(){
+return size==0;
+}
+// Sets nextRight of all nodes of a tree
+void connect(struct Node* root)
+{
+push(root);
+
+    // null marker to represent end of current level
+push(NULL); 
+
+    // Do Level order of tree using NULL markers
+while (!empty()) {
+        Node *p = font();
+pop();
+if (p != NULL) {
+
+            // next element in queue represents next 
+            // node at current Level 
+p->nextRight = font();
+
+            // push left and right children of current
+            // node
+if (p->left)
+push(p->left); 
+if (p->right)
+push(p->right);
+        } 
+
+        // if queue is not empty, push NULL to mark 
+        // nodes at this level are visited
+else if (!empty()) 
+push(NULL); 
+    }
+}
+
+/* UTILITY FUNCTIONS */
+/* Helper function that allocates a new node with the
+given data and NULL left and right pointers. */
+struct Node* newnode(int data)
+{
+struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+node->data = data;
+node->left = node->right = node->nextRight = NULL;
+return (node);
+}
+struct Node* insert(struct Node* root,int u)
+{
+    if(root==NULL)
+    {
+        return newnode(u);
+    }
+        if(root->data<u)
+        {
+            root->right=insert(root->right,u);
+        }
+        else{
+            root->left=insert(root->left,u);
+        }
+    return root;
+}
+void inorder(struct Node* root)
+{
+    if(root!=NULL){
+    inorder(root->left);
+    std::cout<<root->data<<"-";
+    inorder(root->right);
+    }
+}
+/* Driver program to test above functions*/
+int main()
+{
+
+int rootd;
+std::cin>>rootd;
+struct Node* root = newnode(rootd);
+/*root->left = newnode(8);
+root->right = newnode(2);
+root->left->left = newnode(3);
+root->right->right = newnode(90);*/
+int h;
+std::cin>>h;
+int num_node=pow(2,h+1)-1;
+for(int i=1;i<=num_node;i++)
+{
+    int u,v;
+    std::cin>>u;
+    insert(root,u);
+}
+    // PopulatesnextRight pointer in all nodes
+connect(root);
+while(root!=NULL){
+    Node* temp=root;
+while(temp!=NULL){
+std::cout<<temp->data<<" ";
+temp=temp->nextRight;
+    }
+std::cout<<"\n";
+root=root->left;
+    }
+    // Let us check the values of nextRight pointers
+
+return 0;
+}

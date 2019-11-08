@@ -1,0 +1,40 @@
+#include <iostream>
+using namespace std;
+class a
+{
+    public:
+    int *x;
+    a(int a){
+        x=new int(a);
+    }
+    a(const a & a1)
+    {
+        std::cout<<"Copy\n";
+    }
+    a & operator=(const a & a1){
+        std::cout<<"assignment\n";
+    }
+    void setvalue(int a){
+        *x=a;
+    }
+    void print()
+    {
+        std::cout<<*x<<"\n";
+    }
+};
+int main()
+{
+  //  cout << "Hello World!" << endl;
+    a a1(2);
+    a a2(1);
+    a2=a1;
+    a2.print();
+    a1.print();
+    a1.setvalue(12);
+    a2.print();
+    a1.print();
+    a2.setvalue(10);
+    a2.print();
+    a1.print();
+    return 0;
+}

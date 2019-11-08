@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+int mat[][7]={
+        {0,1,0,1,0,1,1},
+        {0,0,1,0,0,0,1},
+        {0,1,0,1,1,1,0},
+        {1,0,0,0,0,0,1},
+        {0,1,1,1,0,1,1},
+        {0,1,0,1,0,0,1},
+        {0,0,1,0,0,1,0}
+    };
+void dfsutil(vector<int> g[],int u,int timein[],int timeout[],int & cnt,bool visited[]);
+void dfs(int u,int timein[],int timeout[],int& cnt)
+{
+    bool visited[7];
+    for(int i=0;i<7;i++)
+    {
+        visited[i]=false;
+    }
+    visited[u]=true;
+    vector<int> g[7];
+    for(int i=0;i<7;i++)
+    {
+        for(int j=0;j<7;j++)
+        {
+            if(mat[i][j]==1)
+            {
+            g[i].push_back(j);
+            }
+        }
+    }
+    dfsutil(g,u,timein,timeout,cnt,visited);
+}
+void dfsutil(vector<int> g[],int u,int timein[],int timeout[],int & cnt,bool visited[])
+{
+    for(int i=0;i<g[u].size();i++)
+    {
+        int parent=g[u][i];
+        timein[u]=cnt;
+        cnt++;
+        for(int j=0;j<7;j++)
+        {
+            if(j!=parent)
+            {
+                if(mat[u][j]==1 && !visited[j])
+                {
+                    visited[j]=true;
+                    dfsutil(g,j,timein,timeout,cnt,visited);
+                }
+            }
+        }
+        timeout[u]=cnt++;
+    
+    if(timein[u] <= timein[parent] && 
+             timeout[parent] <= timeout[u]){
+                 std::cout<<"Fowrward edge between "<<u<<" and "<<parent<<"\n";
+             }
+    else if(timein[u] >= timein[parent] && 
+             timeout[parent] >= timeout[u])
+             {
+                 std::cout<<"Back edge between"<<u<<" and "<<parent<<"\n";
+             }
+    else{
+        std::cout<<"Cross edge between "<<u<<" and "<<parent<<"\n";
+    }
+    }
+}
+int main()
+{
+    //cout << "Hello World!" << endl;
+    int timein[7];
+    int timeout[7];
+    int cnt=0;
+    dfs(0,timein,timeout,cnt);
+    return 0;
+}
